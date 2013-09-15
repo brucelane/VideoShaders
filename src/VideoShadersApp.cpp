@@ -92,6 +92,7 @@ void VideoShadersApp::setup()
 	mParams.addParam( "Render Window Height",	&mRenderHeight,										"" );
 	mParams.addButton( "Pass Through",			bind( &VideoShadersApp::shaderPassThru, this ),		"" );
 	mParams.addButton( "Light shader",			bind( &VideoShadersApp::shaderLight, this ),		"" );
+	mParams.addButton( "Edge Detection shader",	bind( &VideoShadersApp::shaderEdgeDetection, this ),"" );
 	mParams.addButton( "Create window",			bind( &VideoShadersApp::createNewWindow, this ),	"key=n" );
 	mParams.addButton( "Delete windows",		bind( &VideoShadersApp::deleteWindows, this ),		"key=d" );
 	mParams.addButton( "Quit",					bind( &VideoShadersApp::shutdown, this ),			"key=q" );
@@ -113,6 +114,10 @@ void VideoShadersApp::shaderPassThru()
 void VideoShadersApp::shaderLight()
 {
 	mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("light.frag") );
+}
+void VideoShadersApp::shaderEdgeDetection()
+{
+	mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("edgedetection.frag") );
 }
 void VideoShadersApp::createNewWindow()
 {
@@ -202,7 +207,18 @@ void VideoShadersApp::update()
 		else if(m.getAddress() == "/video/load"){
 			fs::path imagePath = m.getArgAsString(0);
 			addFullScreenMovie( imagePath );
-		}			
+		}	
+		else if(m.getAddress() == "/shader/change"){
+			switch (m.getArgAsInt32(0))
+			{
+			case 0:
+				shaderPassThru();
+				break;
+			case 1:
+				shaderLight();
+				break;
+			}
+		}
 		else if(m.getAddress() == "/quit"){
 			quitProgram();
 		}		

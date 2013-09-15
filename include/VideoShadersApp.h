@@ -58,6 +58,8 @@ public:
 	void						shaderPassThru();
 	// Light
 	void						shaderLight();
+	// Light
+	void						shaderEdgeDetection();
 
 private:
 	// windows and params
