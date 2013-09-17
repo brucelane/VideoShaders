@@ -48,7 +48,7 @@ void VideoShadersApp::keyDown( KeyEvent event )
 }
 void VideoShadersApp::prepareSettings( Settings *settings )
 {
-	settings->setWindowSize( 450, 400 );
+	settings->setWindowSize( 450, 450 );
 	settings->setFrameRate( 60.0f );
 	settings->enableConsoleWindow();
 }
@@ -68,7 +68,7 @@ void VideoShadersApp::setup()
 	movieLoaded = false;
 	try 
 	{
-		iResolution = Vec3i( mRenderWidth, mRenderHeight, 1 );
+		//iResolution = Vec3i( mRenderWidth, mRenderHeight, 1 );
 		iGlobalTime = 1;
 		iMouse = Vec3i( mRenderWidth/2, mRenderHeight/2, 1 );
 
@@ -187,7 +187,12 @@ void VideoShadersApp::mouseMove( MouseEvent event )
 void VideoShadersApp::update()
 {
 	iGlobalTime += 0.01;
-	if ( mMovie ) mFrameTexture = mMovie.getTexture();
+	if ( mMovie )
+	{
+		mFrameTexture = mMovie.getTexture();
+		// useless mFrameTexture.setFlipped(true);
+
+	}
 	while( receiver.hasWaitingMessages() ) {
 		osc::Message m;
 		receiver.getNextMessage( &m );
@@ -238,6 +243,11 @@ void VideoShadersApp::draw()
 	// Draw on render window only
 	if (app::getWindow() == controlWindow)	
 	{
+		if( mInfoTexture ) 
+		{
+			glDisable( GL_TEXTURE_RECTANGLE_ARB );
+			gl::draw( mInfoTexture, Vec2f( 20, getWindowHeight() - 20 - (float)mInfoTexture.getHeight() ) );
+		}
 		// Draw the params on control window only
 		mParams.draw();
 	}
@@ -245,7 +255,8 @@ void VideoShadersApp::draw()
 	{
 		gl::enableAlphaBlending();
 		glEnable( GL_TEXTURE_RECTANGLE_ARB );
-
+		//gl::setMatricesWindow(mRenderWidth/2, mRenderHeight/2, false);
+		//gl::scale( Vec3f(1, -1, 1) );
 		mShader.bind();
 		mShader.uniform("iGlobalTime",iGlobalTime);
 		mShader.uniform("iResolution",iResolution);
