@@ -8,7 +8,9 @@
 #include "cinder/Utilities.h"
 #include "cinder/params/Params.h"
 #include "dwmapi.h"
+#include "ciUI.h"
 #include "OscListener.h"
+#include "GlslHotProg.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -60,6 +62,13 @@ public:
 	void						shaderLight();
 	// Light
 	void						shaderEdgeDetection();
+	//ciUI
+	ciUICanvas					*gui;   
+	void guiEvent(ciUIEvent *event);
+	ciUIRotarySlider			*beginRotary;
+	ciUIRotarySlider			*endRotary;
+	float						duration;
+	float						b, e;
 
 private:
 	// windows and params
@@ -86,4 +95,7 @@ private:
 	ColorAf						mBackgroundColor;
 	ColorAf						mColor;
 	osc::Listener 				receiver;
+	// dynamic loading
+	GlslHotProg					mHotShader;
+
 };

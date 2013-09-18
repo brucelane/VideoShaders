@@ -1,5 +1,93 @@
 #include "VideoShadersApp.h"
 
+void VideoShadersApp::prepareSettings( Settings *settings )
+{
+	settings->setWindowSize( 450, 450 );
+	settings->setFrameRate( 60.0f );
+	settings->enableConsoleWindow();
+}
+void VideoShadersApp::setup()
+{
+	// Display sizes
+	mMainDisplayWidth = Display::getMainDisplay()->getWidth();
+	mRenderX = mMainDisplayWidth;
+	mRenderY = 0;
+	for (auto display : Display::getDisplays() )
+	{
+		//std::cout << "Reso:" << display->getHeight() << "\n"; 
+		mRenderWidth = display->getWidth();
+		mRenderHeight = display->getHeight();
+	}
+
+	movieLoaded = false;
+	try 
+	{
+		//iResolution = Vec3i( mRenderWidth, mRenderHeight, 1 );
+		iGlobalTime = 1;
+		iMouse = Vec3i( mRenderWidth/2, mRenderHeight/2, 1 );
+
+		gl::Texture::Format format;
+		format.setTargetRect();
+		mTexture0 = gl::Texture(loadImage( loadAsset("background.jpg") ), format);
+		iResolution = Vec3i( mTexture0.getWidth(), mTexture0.getHeight(), 1 );
+		iChannelResolution = Vec3i( mTexture0.getWidth(),  mTexture0.getHeight(), 1);
+		// load and compile the shader
+		mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("passthru.frag") );
+		mHotShader = GlslHotProg( "deflt.vert", "edgedetection.frag" );
+	}
+	catch( const std::exception &e ) 
+	{
+		// if anything went wrong, show it in the output window
+		console() << e.what() << std::endl;
+	}
+	mParams = params::InterfaceGl( "Params", Vec2i( 400, 300 ) );
+	mParams.addParam( "Render Window X",		&mRenderX,											"" );
+	mParams.addParam( "Render Window Y",		&mRenderY,											"" );
+	mParams.addParam( "Render Window Width",	&mRenderWidth,										"" );
+	mParams.addParam( "Render Window Height",	&mRenderHeight,										"" );
+	mParams.addButton( "Pass Through",			bind( &VideoShadersApp::shaderPassThru, this ),		"" );
+	mParams.addButton( "Light shader",			bind( &VideoShadersApp::shaderLight, this ),		"" );
+	mParams.addButton( "Edge Detection shader",	bind( &VideoShadersApp::shaderEdgeDetection, this ),"" );
+	mParams.addButton( "Create window",			bind( &VideoShadersApp::createNewWindow, this ),	"key=n" );
+	mParams.addButton( "Delete windows",		bind( &VideoShadersApp::deleteWindows, this ),		"key=d" );
+	mParams.addButton( "Quit",					bind( &VideoShadersApp::shutdown, this ),			"key=q" );
+
+	//store window
+	controlWindow = this->getWindow();
+	int uniqueId = getNumWindows();
+	controlWindow->getSignalClose().connect(
+		[uniqueId,this] { shutdown(); this->console() << "You quit console window #" << uniqueId << std::endl; }
+	);
+
+	b = 0;
+	e = 0;
+	gui = new ciUICanvas(getWindowWidth() - 200, getWindowHeight() - 100, 160, 80);
+	gui->setTheme( CI_UI_THEME_RUSTICORANGE );
+
+	gui->registerUIEvents(this, &VideoShadersApp::guiEvent); 
+
+	receiver.setup( 10009 );
+	createNewWindow();
+}
+		
+void VideoShadersApp::guiEvent(ciUIEvent *event)
+{
+	string name = event->widget->getName(); 
+	cout << name << endl; 
+	if(name == "begin")
+	{
+		ciUIRotarySlider *begin = (ciUIRotarySlider *) event->widget; 
+		b = begin->getScaledValue(); 
+	}
+	if(name == "end")
+	{
+		ciUIRotarySlider *end = (ciUIRotarySlider *) event->widget; 
+		e = end->getScaledValue(); 
+	}
+	cout << "begin: " << b << " end: " << e << endl; 
+
+	mMovie.setActiveSegment(b, e);
+}
 //full screen movie
 void VideoShadersApp::addFullScreenMovie( const fs::path &path )
 {
@@ -7,6 +95,19 @@ void VideoShadersApp::addFullScreenMovie( const fs::path &path )
 	try 
 	{
 		mMovie = qtime::MovieGl(path );
+		duration = mMovie.getDuration();
+		gui->removeWidget("begin");
+		gui->removeWidget("end");
+		/*delete beginRotary;
+		delete endRotary;*/
+		beginRotary = new ciUIRotarySlider( 50, 0.0, duration, 0.0, "begin" );
+		gui->addWidget( beginRotary ); 
+		endRotary = new ciUIRotarySlider( 50, 0.0, duration, duration, "end" );
+		//gui->addWidget( endRotary ); 
+		gui->addWidgetEastOf( endRotary, "begin" ); 
+
+		mMovie.setActiveSegment(0.0f, duration);
+
 		mMovie.setLoop();
 		mMovie.play();
 		mMovie.setVolume( 0.0f );
@@ -46,66 +147,7 @@ void VideoShadersApp::keyDown( KeyEvent event )
 	else if( event.getChar() == '2' )
 		mMovie.setRate( 12 );
 }
-void VideoShadersApp::prepareSettings( Settings *settings )
-{
-	settings->setWindowSize( 450, 450 );
-	settings->setFrameRate( 60.0f );
-	settings->enableConsoleWindow();
-}
-void VideoShadersApp::setup()
-{
-	// Display sizes
-	mMainDisplayWidth = Display::getMainDisplay()->getWidth();
-	mRenderX = mMainDisplayWidth;
-	mRenderY = 0;
-	for (auto display : Display::getDisplays() )
-	{
-		//std::cout << "Reso:" << display->getHeight() << "\n"; 
-		mRenderWidth = display->getWidth();
-		mRenderHeight = display->getHeight();
-	}
 
-	movieLoaded = false;
-	try 
-	{
-		//iResolution = Vec3i( mRenderWidth, mRenderHeight, 1 );
-		iGlobalTime = 1;
-		iMouse = Vec3i( mRenderWidth/2, mRenderHeight/2, 1 );
-
-		gl::Texture::Format format;
-		format.setTargetRect();
-		mTexture0 = gl::Texture(loadImage( loadAsset("background.jpg") ), format);
-		iResolution = Vec3i( mTexture0.getWidth(), mTexture0.getHeight(), 1 );
-		iChannelResolution = Vec3i( mTexture0.getWidth(),  mTexture0.getHeight(), 1);
-		// load and compile the shader
-		mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("passthru.frag") );
-	}
-	catch( const std::exception &e ) 
-	{
-		// if anything went wrong, show it in the output window
-		console() << e.what() << std::endl;
-	}
-	mParams = params::InterfaceGl( "Params", Vec2i( 400, 300 ) );
-	mParams.addParam( "Render Window X",		&mRenderX,											"" );
-	mParams.addParam( "Render Window Y",		&mRenderY,											"" );
-	mParams.addParam( "Render Window Width",	&mRenderWidth,										"" );
-	mParams.addParam( "Render Window Height",	&mRenderHeight,										"" );
-	mParams.addButton( "Pass Through",			bind( &VideoShadersApp::shaderPassThru, this ),		"" );
-	mParams.addButton( "Light shader",			bind( &VideoShadersApp::shaderLight, this ),		"" );
-	mParams.addButton( "Edge Detection shader",	bind( &VideoShadersApp::shaderEdgeDetection, this ),"" );
-	mParams.addButton( "Create window",			bind( &VideoShadersApp::createNewWindow, this ),	"key=n" );
-	mParams.addButton( "Delete windows",		bind( &VideoShadersApp::deleteWindows, this ),		"key=d" );
-	mParams.addButton( "Quit",					bind( &VideoShadersApp::shutdown, this ),			"key=q" );
-
-	//store window
-	controlWindow = this->getWindow();
-	int uniqueId = getNumWindows();
-	controlWindow->getSignalClose().connect(
-		[uniqueId,this] { shutdown(); this->console() << "You quit console window #" << uniqueId << std::endl; }
-	);
-	receiver.setup( 10009 );
-	createNewWindow();
-}
 // load and compile shaders
 void VideoShadersApp::shaderPassThru()
 {
@@ -186,9 +228,12 @@ void VideoShadersApp::mouseMove( MouseEvent event )
 }
 void VideoShadersApp::update()
 {
+	mHotShader.update();
 	iGlobalTime += 0.01;
 	if ( mMovie )
 	{
+		
+
 		mFrameTexture = mMovie.getTexture();
 		// useless mFrameTexture.setFlipped(true);
 
@@ -250,11 +295,40 @@ void VideoShadersApp::draw()
 		}
 		// Draw the params on control window only
 		mParams.draw();
+		gui->draw();
+
+		// hotglsl
+		gl::enableAlphaBlending();
+		glEnable( GL_TEXTURE_RECTANGLE_ARB );
+		gl::color(Color::white());
+		mHotShader.getProg().bind();
+		mHotShader.getProg().uniform("iGlobalTime",iGlobalTime);
+		mHotShader.getProg().uniform("iResolution",iResolution);
+		mHotShader.getProg().uniform("iChannelResolution", iChannelResolution);
+		mHotShader.getProg().uniform("iMouse", iMouse);
+		mHotShader.getProg().uniform("iChannel0", 0);
+		if ( mMovie && mFrameTexture )
+		{
+			mFrameTexture.bind(0);
+			mHotShader.getProg().uniform("width",mFrameTexture.getWidth()); 
+			mHotShader.getProg().uniform("height",mFrameTexture.getHeight()); 
+		}
+		else
+		{
+			mTexture0.bind(0);
+			mHotShader.getProg().uniform("width",mTexture0.getWidth()); 
+			mHotShader.getProg().uniform("height",mTexture0.getHeight()); 
+		}
+		gl::drawSphere( Vec3f::zero(), 1.0f, 128 );
+		if ( mFrameTexture ) mFrameTexture.unbind();
+		else mTexture0.unbind();
+		mHotShader.getProg().unbind();		// unbind textures and shader
 	}
 	else
 	{
 		gl::enableAlphaBlending();
 		glEnable( GL_TEXTURE_RECTANGLE_ARB );
+		gl::color(Color::white());
 		//gl::setMatricesWindow(mRenderWidth/2, mRenderHeight/2, false);
 		//gl::scale( Vec3f(1, -1, 1) );
 		mShader.bind();
@@ -278,11 +352,12 @@ void VideoShadersApp::draw()
 		}
 
 		gl::drawSolidRect(getWindowBounds());
-
-		// unbind textures and shader
+		
 		if ( mFrameTexture ) mFrameTexture.unbind();
 		else mTexture0.unbind();
 		mShader.unbind();
+				
+
 	}
 }
 
