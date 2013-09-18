@@ -2,7 +2,7 @@
 
 void VideoShadersApp::prepareSettings( Settings *settings )
 {
-	settings->setWindowSize( 450, 450 );
+	settings->setWindowSize( 500, 600 );
 	settings->setFrameRate( 60.0f );
 	settings->enableConsoleWindow();
 }
@@ -40,7 +40,7 @@ void VideoShadersApp::setup()
 		// if anything went wrong, show it in the output window
 		console() << e.what() << std::endl;
 	}
-	mParams = params::InterfaceGl( "Params", Vec2i( 400, 300 ) );
+	mParams = params::InterfaceGl( "Params", Vec2i( 400, 400 ) );
 	mParams.addParam( "Render Window X",		&mRenderX,											"" );
 	mParams.addParam( "Render Window Y",		&mRenderY,											"" );
 	mParams.addParam( "Render Window Width",	&mRenderWidth,										"" );
@@ -48,6 +48,7 @@ void VideoShadersApp::setup()
 	mParams.addButton( "Pass Through",			bind( &VideoShadersApp::shaderPassThru, this ),		"" );
 	mParams.addButton( "Light shader",			bind( &VideoShadersApp::shaderLight, this ),		"" );
 	mParams.addButton( "Edge Detection shader",	bind( &VideoShadersApp::shaderEdgeDetection, this ),"" );
+	mParams.addButton( "Test shader",			bind( &VideoShadersApp::shaderTest, this ),			"" );
 	mParams.addButton( "Create window",			bind( &VideoShadersApp::createNewWindow, this ),	"key=n" );
 	mParams.addButton( "Delete windows",		bind( &VideoShadersApp::deleteWindows, this ),		"key=d" );
 	mParams.addButton( "Quit",					bind( &VideoShadersApp::shutdown, this ),			"key=q" );
@@ -61,8 +62,10 @@ void VideoShadersApp::setup()
 
 	b = 0;
 	e = 0;
-	gui = new ciUICanvas(getWindowWidth() - 200, getWindowHeight() - 100, 160, 80);
+	gui = new ciUICanvas(getWindowWidth() - 300, getWindowHeight() - 100, 260, 80);
 	gui->setTheme( CI_UI_THEME_RUSTICORANGE );
+	speedRotary = new ciUIRotarySlider( 50, -7.0, 7.0, rate, "speed" );
+	gui->addWidget( speedRotary ); 
 
 	gui->registerUIEvents(this, &VideoShadersApp::guiEvent); 
 
@@ -84,7 +87,13 @@ void VideoShadersApp::guiEvent(ciUIEvent *event)
 		ciUIRotarySlider *end = (ciUIRotarySlider *) event->widget; 
 		e = end->getScaledValue(); 
 	}
-	cout << "begin: " << b << " end: " << e << endl; 
+	if(name == "speed")
+	{
+		ciUIRotarySlider *sp = (ciUIRotarySlider *) event->widget; 
+		rate = sp->getScaledValue(); 
+		mMovie.setRate( rate );
+	}	
+	cout << "begin: " << b << " end: " << e  << " speed: " << rate << endl; 
 
 	mMovie.setActiveSegment(b, e);
 }
@@ -98,12 +107,10 @@ void VideoShadersApp::addFullScreenMovie( const fs::path &path )
 		duration = mMovie.getDuration();
 		gui->removeWidget("begin");
 		gui->removeWidget("end");
-		/*delete beginRotary;
-		delete endRotary;*/
+		rate = 1;
 		beginRotary = new ciUIRotarySlider( 50, 0.0, duration, 0.0, "begin" );
-		gui->addWidget( beginRotary ); 
+		gui->addWidgetEastOf( beginRotary, "speed" ); 
 		endRotary = new ciUIRotarySlider( 50, 0.0, duration, duration, "end" );
-		//gui->addWidget( endRotary ); 
 		gui->addWidgetEastOf( endRotary, "begin" ); 
 
 		mMovie.setActiveSegment(0.0f, duration);
@@ -143,7 +150,7 @@ void VideoShadersApp::keyDown( KeyEvent event )
 		setFullScreen( ! isFullScreen() );
 	}
 	else if( event.getChar() == '1' )
-		mMovie.setRate( 0.5f );
+		mMovie.setRate( 1 );
 	else if( event.getChar() == '2' )
 		mMovie.setRate( 12 );
 }
@@ -160,6 +167,10 @@ void VideoShadersApp::shaderLight()
 void VideoShadersApp::shaderEdgeDetection()
 {
 	mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("edgedetection.frag") );
+}
+void VideoShadersApp::shaderTest()
+{
+	mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("test.frag") );
 }
 void VideoShadersApp::createNewWindow()
 {
@@ -298,7 +309,7 @@ void VideoShadersApp::draw()
 		gui->draw();
 
 		// hotglsl
-		gl::enableAlphaBlending();
+		/*gl::enableAlphaBlending();
 		glEnable( GL_TEXTURE_RECTANGLE_ARB );
 		gl::color(Color::white());
 		mHotShader.getProg().bind();
@@ -322,7 +333,7 @@ void VideoShadersApp::draw()
 		gl::drawSphere( Vec3f::zero(), 1.0f, 128 );
 		if ( mFrameTexture ) mFrameTexture.unbind();
 		else mTexture0.unbind();
-		mHotShader.getProg().unbind();		// unbind textures and shader
+		mHotShader.getProg().unbind();	*/	// unbind textures and shader
 	}
 	else
 	{

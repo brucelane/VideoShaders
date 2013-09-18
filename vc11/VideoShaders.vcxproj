@@ -149,6 +149,7 @@
     <None Include="..\assets\edgedetection.frag" />
     <None Include="..\assets\light.frag" />
     <None Include="..\assets\passthru.frag" />
+    <None Include="..\assets\test.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -60,15 +60,18 @@ public:
 	void						shaderPassThru();
 	// Light
 	void						shaderLight();
-	// Light
+	// EdgeDetection
 	void						shaderEdgeDetection();
+	// Test
+	void						shaderTest();
 	//ciUI
 	ciUICanvas					*gui;   
 	void guiEvent(ciUIEvent *event);
 	ciUIRotarySlider			*beginRotary;
 	ciUIRotarySlider			*endRotary;
+	ciUIRotarySlider			*speedRotary;
 	float						duration;
-	float						b, e;
+	float						b, e, rate;
 
 private:
 	// windows and params
