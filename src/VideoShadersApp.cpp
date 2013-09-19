@@ -24,16 +24,16 @@ void VideoShadersApp::setup()
 
 	movieLoaded = false;
 	isFlipped = false;
+	iResolution = Vec3i( mRenderWidth, mRenderHeight, 1 );
 	try 
 	{
-		//iResolution = Vec3i( mRenderWidth, mRenderHeight, 1 );
 		iGlobalTime = 1;
 		iMouse = Vec3i( mRenderWidth/2, mRenderHeight/2, 1 );
 
 		gl::Texture::Format format;
 		format.setTargetRect();
 		mTexture0 = gl::Texture(loadImage( loadAsset("background.jpg") ), format);
-		iResolution = Vec3i( mTexture0.getWidth(), mTexture0.getHeight(), 1 );
+		//iResolution = Vec3i( mTexture0.getWidth(), mTexture0.getHeight(), 1 );
 		iChannelResolution = Vec3i( mTexture0.getWidth(),  mTexture0.getHeight(), 1);
 		// load and compile the shader
 		mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("passthru.frag") );
@@ -148,7 +148,7 @@ void VideoShadersApp::addFullScreenMovie( const fs::path &path )
 		infoText.setBorder( 4, 2 );
 		mInfoTexture = gl::Texture( infoText.render( true ) );
 
-		iResolution = Vec3i( mMovie.getWidth(), mMovie.getHeight(), 1 );
+		//iResolution = Vec3i( mMovie.getWidth(), mMovie.getHeight(), 1 );
 		iChannelResolution = Vec3i( mMovie.getWidth(), mMovie.getHeight(), 1);
 
 	}
@@ -375,17 +375,17 @@ void VideoShadersApp::draw()
 
 		if ( mMovie && mFrameTexture )
 		{
+			mShader.uniform("width",mFrameTexture.getWidth()); 
+			mShader.uniform("height",mFrameTexture.getHeight()); 
 			mFrameTexture.setFlipped(isFlipped);
 
 			mFrameTexture.bind(0);
-			mShader.uniform("width",mFrameTexture.getWidth()); 
-			mShader.uniform("height",mFrameTexture.getHeight()); 
 		}
 		else
 		{
-			mTexture0.bind(0);
 			mShader.uniform("width",mTexture0.getWidth()); 
 			mShader.uniform("height",mTexture0.getHeight()); 
+			mTexture0.bind(0);
 		}
 
 		gl::drawSolidRect(getWindowBounds());

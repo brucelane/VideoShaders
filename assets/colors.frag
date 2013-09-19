@@ -11,12 +11,13 @@ uniform float			iGlobalTime;           // shader playback time (in seconds)
 void main()
 {
 	// colors
-	//RIEN vec2 p = gl_FragCoord.xy/iResolution.xy;
+	//Nothing vec2 p = gl_FragCoord.xy/iResolution.xy;
 	//RTE vec2 uv = gl_TexCoord[0].st* vec2(width,height);
 	//RTE vec2 uv = gl_TexCoord[0].st;
 	//RTE vec2 uv = gl_TexCoord[0].uv;
-	//vec2 p = gl_FragCoord.xy / vec2(5,3);
-		vec2 uv = gl_TexCoord[0].st* vec2(width,height);
+	//OK but flipped:
+	vec2 p = gl_FragCoord.xy / vec2(5,3);
+	
 
 	vec4 col = texture2DRect(iChannel0, p);
 	vec2 offset = vec2(.01,.0);
