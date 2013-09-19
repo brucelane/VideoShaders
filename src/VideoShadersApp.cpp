@@ -18,8 +18,12 @@ void VideoShadersApp::setup()
 		mRenderWidth = display->getWidth();
 		mRenderHeight = display->getHeight();
 	}
+	mOriginUpperLeft = true;
+	mScreenWidth = mRenderWidth;
+	mScreenHeight = mRenderHeight;
 
 	movieLoaded = false;
+	isFlipped = false;
 	try 
 	{
 		//iResolution = Vec3i( mRenderWidth, mRenderHeight, 1 );
@@ -45,9 +49,14 @@ void VideoShadersApp::setup()
 	mParams.addParam( "Render Window Y",		&mRenderY,											"" );
 	mParams.addParam( "Render Window Width",	&mRenderWidth,										"" );
 	mParams.addParam( "Render Window Height",	&mRenderHeight,										"" );
+	mParams.addParam( "Flipped",				&isFlipped,											"" );
+	mParams.addParam( "Screen Width",			&mScreenWidth,										"" );
+	mParams.addParam( "Screen Height",			&mScreenHeight,										"" );
+	mParams.addParam( "mOriginUpperLeft",		&mOriginUpperLeft,									"" );
 	mParams.addButton( "Pass Through",			bind( &VideoShadersApp::shaderPassThru, this ),		"" );
 	mParams.addButton( "Light shader",			bind( &VideoShadersApp::shaderLight, this ),		"" );
 	mParams.addButton( "Edge Detection shader",	bind( &VideoShadersApp::shaderEdgeDetection, this ),"" );
+	mParams.addButton( "Colors",				bind( &VideoShadersApp::shaderColors, this ),		"" );
 	mParams.addButton( "Test shader",			bind( &VideoShadersApp::shaderTest, this ),			"" );
 	mParams.addButton( "Create window",			bind( &VideoShadersApp::createNewWindow, this ),	"key=n" );
 	mParams.addButton( "Delete windows",		bind( &VideoShadersApp::deleteWindows, this ),		"key=d" );
@@ -62,10 +71,18 @@ void VideoShadersApp::setup()
 
 	b = 0;
 	e = 0;
-	gui = new ciUICanvas(getWindowWidth() - 300, getWindowHeight() - 100, 260, 80);
+	vector<float> mbuffer; 
+    for(int i = 0; i < 1024; i++)
+    {
+         mbuffer.push_back(0);        
+    }
+	gui = new ciUICanvas(getWindowWidth() - 300, getWindowHeight() - 200, 260, 180);
 	gui->setTheme( CI_UI_THEME_RUSTICORANGE );
-	speedRotary = new ciUIRotarySlider( 50, -7.0, 7.0, rate, "speed" );
+	speedRotary = new ciUIRotarySlider( 50, -2.0, 4.0, rate, "speed" );
 	gui->addWidget( speedRotary ); 
+	fps = new ciUILabel("fps", CI_UI_FONT_SMALL);
+	gui->addWidgetSouthOf(fps, "speed");        
+	mvg = (ciUIMovingGraph *) gui->addWidgetSouthOf(new ciUIMovingGraph(240, 30, mbuffer, 1024, 0, 120, "fpsmvg"), "fps");    
 
 	gui->registerUIEvents(this, &VideoShadersApp::guiEvent); 
 
@@ -131,6 +148,9 @@ void VideoShadersApp::addFullScreenMovie( const fs::path &path )
 		infoText.setBorder( 4, 2 );
 		mInfoTexture = gl::Texture( infoText.render( true ) );
 
+		iResolution = Vec3i( mMovie.getWidth(), mMovie.getHeight(), 1 );
+		iChannelResolution = Vec3i( mMovie.getWidth(), mMovie.getHeight(), 1);
+
 	}
 	catch( ... ) {
 		console() << "Unable to load the movie." << std::endl;
@@ -171,6 +191,10 @@ void VideoShadersApp::shaderEdgeDetection()
 void VideoShadersApp::shaderTest()
 {
 	mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("test.frag") );
+}
+void VideoShadersApp::shaderColors()
+{
+	mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("colors.frag") );
 }
 void VideoShadersApp::createNewWindow()
 {
@@ -241,13 +265,12 @@ void VideoShadersApp::update()
 {
 	mHotShader.update();
 	iGlobalTime += 0.01;
+	gui->update(); 
+	mvg->addPoint(getAverageFps());
+	fps->setLabel(ci::toString(getAverageFps()));
 	if ( mMovie )
-	{
-		
-
+	{		
 		mFrameTexture = mMovie.getTexture();
-		// useless mFrameTexture.setFlipped(true);
-
 	}
 	while( receiver.hasWaitingMessages() ) {
 		osc::Message m;
@@ -341,6 +364,7 @@ void VideoShadersApp::draw()
 		glEnable( GL_TEXTURE_RECTANGLE_ARB );
 		gl::color(Color::white());
 		//gl::setMatricesWindow(mRenderWidth/2, mRenderHeight/2, false);
+		gl::setMatricesWindow(mScreenWidth, mScreenHeight, mOriginUpperLeft);
 		//gl::scale( Vec3f(1, -1, 1) );
 		mShader.bind();
 		mShader.uniform("iGlobalTime",iGlobalTime);
@@ -351,6 +375,8 @@ void VideoShadersApp::draw()
 
 		if ( mMovie && mFrameTexture )
 		{
+			mFrameTexture.setFlipped(isFlipped);
+
 			mFrameTexture.bind(0);
 			mShader.uniform("width",mFrameTexture.getWidth()); 
 			mShader.uniform("height",mFrameTexture.getHeight()); 

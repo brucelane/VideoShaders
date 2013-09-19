@@ -62,6 +62,8 @@ public:
 	void						shaderLight();
 	// EdgeDetection
 	void						shaderEdgeDetection();
+	// Colors
+	void						shaderColors();
 	// Test
 	void						shaderTest();
 	//ciUI
@@ -70,6 +72,8 @@ public:
 	ciUIRotarySlider			*beginRotary;
 	ciUIRotarySlider			*endRotary;
 	ciUIRotarySlider			*speedRotary;
+    ciUIMovingGraph				*mvg; 
+	ciUILabel					*fps;
 	float						duration;
 	float						b, e, rate;
 
@@ -93,6 +97,9 @@ private:
 	int							iEmboss;
 	qtime::MovieGl				mMovie;
 	bool						movieLoaded;
+	bool						isFlipped;
+	bool						mOriginUpperLeft;
+	int							mScreenWidth, mScreenHeight; 
 	// Reymenta
 	void						quitProgram();
 	ColorAf						mBackgroundColor;

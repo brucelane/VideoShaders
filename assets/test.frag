@@ -35,9 +35,16 @@ void main()
 	// test
 	// RTE vec2 uv = gl_FragCoord.xy / iResolution.xy;
 	// Needs Flipping and scaling: 
-	vec2 uv = (gl_FragCoord.xy + vec2(iResolution.x, iResolution.y));
+	//vec2 uv = (gl_FragCoord.xy + vec2(iResolution.x, iResolution.y));
 	//vec2 uv = vec2(gl_FragCoord.x,gl_FragCoord.y) + vec2(x, y);
-	uv=floor(uv*Resolution)/Resolution;
+	// voit rien vec2 uv = vec2( gl_FragCoord.x, gl_FragCoord.y ) / vec2( iResolution.x, iResolution.y );
+	//bof vec2 uv = vec2( gl_FragCoord.x, gl_FragCoord.y ) / vec2(width,height);
+	// OK mais scale à voir :
+	vec2 uv = gl_TexCoord[0].st* vec2(width,height);
+
+	//
+	//vec2 uv = gl_FragCoord.xy / vec2(5,3);
+	// 20130919 uv=floor(uv*Resolution)/Resolution;
 	vec2 p2=vec2(0.);
 	float height=0.;
 	for (int l=0; l<ScanLines; l++) {

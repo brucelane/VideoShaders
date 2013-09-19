@@ -145,6 +145,7 @@
     <ClInclude Include="..\include\VideoShadersApp.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\assets\colors.frag" />
     <None Include="..\assets\deflt.vert" />
     <None Include="..\assets\edgedetection.frag" />
     <None Include="..\assets\light.frag" />
