@@ -45,91 +45,91 @@
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\OscBundle.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\OscBundle.cpp">
       <Filter>Blocks\OSC\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\OscListener.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\OscListener.cpp">
       <Filter>Blocks\OSC\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\OscMessage.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\OscMessage.cpp">
       <Filter>Blocks\OSC\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\OscSender.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\OscSender.cpp">
       <Filter>Blocks\OSC\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\ip\IpEndpointName.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\ip\IpEndpointName.cpp">
       <Filter>Blocks\OSC\src\ip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscOutboundPacketStream.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\osc\OscOutboundPacketStream.cpp">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscPrintReceivedElements.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\osc\OscPrintReceivedElements.cpp">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscReceivedElements.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\osc\OscReceivedElements.cpp">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscTypes.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\osc\OscTypes.cpp">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\OscArg.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\OscArg.h">
       <Filter>Blocks\OSC\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\OscBundle.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\OscBundle.h">
       <Filter>Blocks\OSC\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\OscListener.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\OscListener.h">
       <Filter>Blocks\OSC\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\OscMessage.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\OscMessage.h">
       <Filter>Blocks\OSC\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\OscSender.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\OscSender.h">
       <Filter>Blocks\OSC\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\ip\IpEndpointName.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\ip\IpEndpointName.h">
       <Filter>Blocks\OSC\src\ip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\ip\NetworkingUtils.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\ip\NetworkingUtils.h">
       <Filter>Blocks\OSC\src\ip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\ip\PacketListener.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\ip\PacketListener.h">
       <Filter>Blocks\OSC\src\ip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\ip\TimerListener.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\ip\TimerListener.h">
       <Filter>Blocks\OSC\src\ip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\ip\UdpSocket.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\ip\UdpSocket.h">
       <Filter>Blocks\OSC\src\ip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\MessageMappingOscPacketListener.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\MessageMappingOscPacketListener.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscException.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\OscException.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscHostEndianness.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\OscHostEndianness.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscOutboundPacketStream.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\OscOutboundPacketStream.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscPacketListener.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\OscPacketListener.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscPrintReceivedElements.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\OscPrintReceivedElements.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscReceivedElements.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\OscReceivedElements.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\cinder_master\blocks\OSC\src\osc\OscTypes.h">
+    <ClInclude Include="$(CINDER_085)\blocks\OSC\src\osc\OscTypes.h">
       <Filter>Blocks\OSC\src\osc</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\ip\win32\NetworkingUtils.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\ip\win32\NetworkingUtils.cpp">
       <Filter>Blocks\OSC\src\ip\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\cinder_master\blocks\OSC\src\ip\win32\UdpSocket.cpp">
+    <ClCompile Include="$(CINDER_085)\blocks\OSC\src\ip\win32\UdpSocket.cpp">
       <Filter>Blocks\OSC\src\ip\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\src\GlslHotProg.cpp">

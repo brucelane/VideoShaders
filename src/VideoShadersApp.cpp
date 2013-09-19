@@ -372,9 +372,15 @@ void VideoShadersApp::draw()
 		mShader.uniform("iChannelResolution", iChannelResolution);
 		mShader.uniform("iMouse", iMouse);
 		mShader.uniform("iChannel0", 0);
+		console() << "iResolution.x: " << iResolution.x << std::endl;
+		console() << "iResolution.y: " << iResolution.y << std::endl;
+		console() << "iChannelResolution.x: " << iChannelResolution.x << std::endl;
+		console() << "iChannelResolution.y: " << iChannelResolution.y << std::endl;
 
 		if ( mMovie && mFrameTexture )
 		{
+			console() << "mFrameTexture.getWidth(): " << mFrameTexture.getWidth() << std::endl;
+			console() << "mFrameTexture.getHeight(): " << mFrameTexture.getHeight() << std::endl;
 			mShader.uniform("width",mFrameTexture.getWidth()); 
 			mShader.uniform("height",mFrameTexture.getHeight()); 
 			mFrameTexture.setFlipped(isFlipped);
@@ -383,6 +389,8 @@ void VideoShadersApp::draw()
 		}
 		else
 		{
+			console() << "mTexture0.getWidth(): " << mTexture0.getWidth() << std::endl;
+			console() << "mTexture0.getHeight(): " << mTexture0.getHeight() << std::endl;
 			mShader.uniform("width",mTexture0.getWidth()); 
 			mShader.uniform("height",mTexture0.getHeight()); 
 			mTexture0.bind(0);
