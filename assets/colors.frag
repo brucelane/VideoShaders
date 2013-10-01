@@ -17,7 +17,9 @@ void main()
 	//RTE vec2 uv = gl_TexCoord[0].st;
 	//RTE vec2 uv = gl_TexCoord[0].uv;
 	//OK but flipped:
-	vec2 p = gl_FragCoord.xy / vec2(5,3);
+	//vec2 p = gl_FragCoord.xy / vec2(5,3);
+	
+	vec2 p = gl_FragCoord.xy / vec2(5,-3)  + vec2(0, 350);
 	
 
 	vec4 col = texture2DRect(iChannel0, p);

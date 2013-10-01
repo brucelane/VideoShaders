@@ -36,7 +36,7 @@ void VideoShadersApp::setup()
 		//iResolution = Vec3i( mTexture0.getWidth(), mTexture0.getHeight(), 1 );
 		iChannelResolution = Vec3i( mTexture0.getWidth(),  mTexture0.getHeight(), 1);
 		// load and compile the shader
-		mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("passthru.frag") );
+		mShader = gl::GlslProg( loadAsset("deflt.vert"), loadAsset("edgedetection.frag") );
 		mHotShader = GlslHotProg( "deflt.vert", "edgedetection.frag" );
 	}
 	catch( const std::exception &e ) 
@@ -148,7 +148,6 @@ void VideoShadersApp::addFullScreenMovie( const fs::path &path )
 		infoText.setBorder( 4, 2 );
 		mInfoTexture = gl::Texture( infoText.render( true ) );
 
-		//iResolution = Vec3i( mMovie.getWidth(), mMovie.getHeight(), 1 );
 		iChannelResolution = Vec3i( mMovie.getWidth(), mMovie.getHeight(), 1);
 
 	}
@@ -372,37 +371,34 @@ void VideoShadersApp::draw()
 		mShader.uniform("iChannelResolution", iChannelResolution);
 		mShader.uniform("iMouse", iMouse);
 		mShader.uniform("iChannel0", 0);
-		console() << "iResolution.x: " << iResolution.x << std::endl;
+		mShader.uniform("iChannel1", 1);
+		mShader.uniform("iChannel2", 2);
+		/*console() << "iResolution.x: " << iResolution.x << std::endl;
 		console() << "iResolution.y: " << iResolution.y << std::endl;
 		console() << "iChannelResolution.x: " << iChannelResolution.x << std::endl;
-		console() << "iChannelResolution.y: " << iChannelResolution.y << std::endl;
+		console() << "iChannelResolution.y: " << iChannelResolution.y << std::endl;*/
 
+		mShader.uniform("width",mTexture0.getWidth()); 
+		mShader.uniform("height",mTexture0.getHeight()); 
+		mTexture0.bind(0);
+		mTexture0.bind(1);
+		mTexture0.bind(2);
 		if ( mMovie && mFrameTexture )
 		{
-			console() << "mFrameTexture.getWidth(): " << mFrameTexture.getWidth() << std::endl;
-			console() << "mFrameTexture.getHeight(): " << mFrameTexture.getHeight() << std::endl;
+			/*console() << "mFrameTexture.getWidth(): " << mFrameTexture.getWidth() << std::endl;
+			console() << "mFrameTexture.getHeight(): " << mFrameTexture.getHeight() << std::endl;*/
 			mShader.uniform("width",mFrameTexture.getWidth()); 
 			mShader.uniform("height",mFrameTexture.getHeight()); 
 			mFrameTexture.setFlipped(isFlipped);
-
 			mFrameTexture.bind(0);
-		}
-		else
-		{
-			console() << "mTexture0.getWidth(): " << mTexture0.getWidth() << std::endl;
-			console() << "mTexture0.getHeight(): " << mTexture0.getHeight() << std::endl;
-			mShader.uniform("width",mTexture0.getWidth()); 
-			mShader.uniform("height",mTexture0.getHeight()); 
-			mTexture0.bind(0);
+			mFrameTexture.bind(2);
 		}
 
 		gl::drawSolidRect(getWindowBounds());
 		
 		if ( mFrameTexture ) mFrameTexture.unbind();
-		else mTexture0.unbind();
+		mTexture0.unbind();
 		mShader.unbind();
-				
-
 	}
 }
 

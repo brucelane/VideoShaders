@@ -12,7 +12,12 @@ vec3 sample(const int x, const int y)
 	// Glitch: vec2 uv = (gl_FragCoord.xy + vec2(x, y) * vec2(iResolution.x, iResolution.y));
 	// Runtime error: vec2 uv = (gl_FragCoord.xy + vec2(x, y)) / iResolution.xy;
 	// Needs Flipping and scaling: vec2 uv = (gl_FragCoord.xy + vec2(x, y));
-	vec2 uv = vec2(gl_FragCoord.x,gl_FragCoord.y) + vec2(x, y);
+	// Needs Flipping and scaling: vec2 uv = vec2(gl_FragCoord.x,gl_FragCoord.y) + vec2(x, y);
+	vec2 uv = vec2(gl_FragCoord.x,gl_FragCoord.y) / vec2(5,-3) + vec2(x, y+300);
+
+		//vec2 uv = vec2(gl_FragCoord.x,gl_FragCoord.y) + vec2(x, y) / vec2(iResolution.x, iResolution.y);
+		//vec2 p = gl_FragCoord.xy / vec2(5,-3)  + vec2(1, 300);
+
 	return texture2DRect(iChannel0, uv).xyz;
 }
 float luminance(vec3 c)
@@ -37,6 +42,6 @@ vec3 edge(void)
 void main()
 {
 	vec2 baseCoord = gl_TexCoord[0].st;
-	baseCoord.t = 1.0 - baseCoord.t;
+	//baseCoord.t = 1.0 - baseCoord.t;
 	gl_FragColor = vec4(edge(), 1.0);
 }
