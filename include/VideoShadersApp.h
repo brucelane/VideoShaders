@@ -10,11 +10,13 @@
 #include "dwmapi.h"
 #include "ciUI.h"
 #include "OscListener.h"
-#include "GlslHotProg.h"
+//#include "GlslHotProg.h"
+#include "_2RealGStreamerWrapper.h"
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+using namespace _2RealGStreamerWrapper;
 
 // RenderWindow class
 class RenderWindow
@@ -106,6 +108,31 @@ private:
 	ColorAf						mColor;
 	osc::Listener 				receiver;
 	// dynamic loading
-	GlslHotProg					mHotShader;
+	//GlslHotProg					mHotShader;
+	// gStreamer
+	void setupGui();
+	void updateGui();
+	void open();
+	void clearAll();
+	void pause();
+	void stop();
+	void toggleDirection();
+	int	 calcTileDivisor(int size);
+	int  calcSelectedPlayer(int x, int y);
 
+	std::vector<std::shared_ptr<GStreamerWrapper> >							m_Players;
+	std::vector<ci::gl::Texture>											m_VideoTextures;
+	ci::Font																m_Font;
+	int																		m_iCurrentVideo;
+	double																	m_dLastTime;
+	float																	m_fSeekPos;
+	float																	m_fOldSeekPos;
+	float																	m_fSpeed;
+	float																	m_fVolume;
+	int																		m_iLoopMode;
+	int																		m_iTilesDivisor;
+	int																		m_iTileWidth;
+	int																		m_iTileHeight;
+	bool																	m_bUseVideoBuffer;
+	bool																	m_bUseAudioBuffer;
 };
