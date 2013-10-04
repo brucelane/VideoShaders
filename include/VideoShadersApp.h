@@ -3,7 +3,7 @@
 #include "cinder/gl/gl.h"
 #include "cinder/gl/GlslProg.h"
 #include "cinder/gl/Texture.h"
-#include "cinder/qtime/QuickTime.h"
+//#include "cinder/qtime/QuickTime.h"
 #include "cinder/Text.h"
 #include "cinder/Utilities.h"
 #include "cinder/params/Params.h"
@@ -89,15 +89,13 @@ private:
 	ci::params::InterfaceGl		mParams;
 
 	gl::Texture					mTexture0;
-	gl::Texture					mFrameTexture, mInfoTexture;
-
 	Vec3i						iResolution;           // viewport resolution (in pixels)
 	Vec3i						iChannelResolution;    
 	float						iGlobalTime;           // shader playback time (in seconds)
 	Vec3i						iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
 	gl::GlslProg				mShader;
 	int							iEmboss;
-	qtime::MovieGl				mMovie;
+	//qtime::MovieGl				mMovie;
 	bool						movieLoaded;
 	bool						isFlipped;
 	bool						mOriginUpperLeft;

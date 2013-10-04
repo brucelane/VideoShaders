@@ -1,7 +1,7 @@
 #version 110
-#extension GL_ARB_texture_rectangle : enable
+//#extension GL_ARB_texture_rectangle : enable
 uniform vec3			iResolution;           // viewport resolution (in pixels)
-uniform sampler2DRect	iChannel0;
+uniform sampler2D	iChannel0;
 uniform vec3			iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
 uniform int				width;
 uniform int				height;
@@ -22,13 +22,12 @@ void main()
 	vec2 p = gl_FragCoord.xy / vec2(5,-3)  + vec2(0, 350);
 	
 
-	vec4 col = texture2DRect(iChannel0, p);
+	vec4 col = texture2D(iChannel0, p);
 	vec2 offset = vec2(3.1,4.01);
-	col.r = texture2DRect(iChannel0, p+offset.x).r;
-	col.g = texture2DRect(iChannel0, p+2.0     ).g;
-	col.b = texture2DRect(iChannel0, p+offset.y).b;
+	col.r = texture2D(iChannel0, p+offset.x).r;
+	col.g = texture2D(iChannel0, p+2.0     ).g;
+	col.b = texture2D(iChannel0, p+offset.y).b;
 	gl_FragColor = col;
-	// RTE gl_FragColor = vec4(col,1);
 	gl_FragColor.a = 1.0;
 
 }
